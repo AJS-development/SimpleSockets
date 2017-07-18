@@ -1,23 +1,26 @@
 {
-  "name": "simplesockets",
-  "version": "1.0.0",
-  "description": "Bye-Bye socket.io!",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AJS-development/SimpleSockets.git"
-  },
-  "keywords": [
+    "name": "simplesockets",
+    "version": "1.0.0",
+    "description": "Bye-Bye socket.io!",
+    "main": "index.js",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AJS-development/SimpleSockets.git"
+    },
+    "keywords": [
     "socket.io",
     "socket"
-  ],
-  "author": "AJS",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/AJS-development/SimpleSockets/issues"
-  },
-  "homepage": "https://github.com/AJS-development/SimpleSockets#readme"
+    ],
+    "dependencies": {
+        "uws": "latest"
+    },
+    "author": "AJS",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/AJS-development/SimpleSockets/issues"
+    },
+    "homepage": "https://github.com/AJS-development/SimpleSockets#readme"
 }
