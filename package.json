@@ -11,8 +11,8 @@
         "url": "git+https://github.com/AJS-development/SimpleSockets.git"
     },
     "keywords": [
-    "socket.io",
-    "socket"
+        "socket.io",
+        "socket"
     ],
     "dependencies": {
         "uws": "latest"
