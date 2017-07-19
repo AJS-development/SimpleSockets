@@ -174,6 +174,7 @@
             id: 0,
             name: "json",
             encoder: function (name, data, main) {
+                if (data === undefined) data = null;
                 var stringified = JSON.stringify(data);
                 var writer = new FastBuffers.writer(name.length + stringified.length + 3);
                 writer.writeUInt8(0);

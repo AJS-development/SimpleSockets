@@ -20,7 +20,7 @@ module.exports = {
     id: 0,
     name: "json",
     encoder: function (name, data, client, main, fastbuffers) {
-
+        if (data === undefined) data = null;
         var stringified = JSON.stringify(data);
 
         var writer = new fastbuffers.writer(name.length + stringified.length + 3);
