@@ -36,13 +36,13 @@
 
 const uws = require("uws")
 
-const Client = require("client.js");
+const Client = require("./client.js");
 
-const JSONEncoder = require("json.js");
+const JSONEncoder = require("./parsers/json.js");
 
-const BinaryEncoder = require("binary.js")
+const BinaryEncoder = require("./parsers/binary.js")
 
-const FastBuffers = require("FastBuffers.js")
+const FastBuffers = require("./FastBuffers.js")
 
 module.exports = class SimpleSockets {
     constructor(options) {
