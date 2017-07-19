@@ -48,13 +48,10 @@ module.exports = class SimpleSockets {
     constructor(options) {
         this.socket = new uws.Server(options);
         this.events = {};
-        this.encoder = {
+        this.parser = {
             json: JSONEncoder
         };
-
-        this.encoderMap = [JSONEncoder, BinaryEncoder]
-
-
+        this.parserMap = [JSONEncoder, BinaryEncoder]
         this.fastbuffers = FastBuffers;
         this.open = true;
         this.init();
@@ -62,6 +59,9 @@ module.exports = class SimpleSockets {
     init() {
         this.socket.on('connection', (clientSocket) => {
             this.onConnection(clientSocket)
+        })
+        this.socket.on('error', (e) => {
+            this.fire("error", e)
         })
     }
     close() {
@@ -80,11 +80,9 @@ module.exports = class SimpleSockets {
         if (this.events[name]) this.events[name](a, b, c, d)
     }
 
-    addEncoder(encoder) {
-
-
-        this.encoder[encoder.name] = encoder;
-        this.encoderMap[encoder.id] = encoder;
+    addParser(parser) {
+        this.parser[parser.name] = parser;
+        this.parserMap[parser.id] = parser;
     }
 
 

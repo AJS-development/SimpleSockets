@@ -22,26 +22,41 @@ module.exports = class Client {
         this.socket = socket;
         this.main = main;
         this.events = {};
-        this.ip = socket._socket.remoteAddress;
+        this.IPv6 = socket._socket.remoteAddress;
+
+        var idx = this.IPv6.lastIndexOf(':');
+        if (~idx && ~this.IPv6.indexOf('.'))
+            this.IP = this.IPv6.slice(idx + 1);
+
         this.init();
     }
     init() {
         this.socket.on("message", (dt) => {
             this.message(dt);
         })
+        this.socket.on('close', (a, b) => {
+            this.fire("disconnect", a, b)
+            this.main.fire("disconnect", this, a, b)
+        })
+        this.socket.on('error', (e) => {
+            this.fire("error", e)
+        })
+
+
+
     }
     message(dt) {
-        var data = dt.binaryData;
 
-        var reader = new this.main.FastBuffers.reader(Buffer.from(data));
+
+        var reader = new this.main.fastbuffers.reader(Buffer.from(dt));
 
 
         var encoding = reader.readUInt8();
 
-        if (this.main.encoderMap[encoding]) {
+        if (this.main.parserMap[encoding]) {
 
             try {
-                var decoded = this.main.encoderMap[encoding].decoder(reader, this, this.main)
+                var decoded = this.main.parserMap[encoding].decoder(reader, this, this.main)
 
                 this.fire(decoded.name, decoded.data)
             } catch (e) {
@@ -65,9 +80,11 @@ module.exports = class Client {
         this.send(name, "binary", dt);
     }
 
-    send(name, encoder, dt) {
-        var encoded = this.main.encoder[encoder].encoder(name, dt, this, this.main, this.main.fastbuffers);
-        this.socket.sendBytes(encoded);
+    send(name, parserName, dt) {
+        var encoded = this.main.parser[parserName].encoder(name, dt, this, this.main, this.main.fastbuffers);
+        this.socket.send(encoded, {
+            binary: true
+        });
     }
 
     on(name, func) {
