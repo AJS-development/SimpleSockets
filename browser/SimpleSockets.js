@@ -280,6 +280,10 @@
         fire(name, a, b, c, d) {
             if (this.events[name]) this.events[name](a, b, c, d)
         }
+        addParser(parser) {
+            this.parser[parser.name] = parser;
+            this.parserMap[parser.id] = parser;
+        }
     }
 
 

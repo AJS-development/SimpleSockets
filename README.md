@@ -73,3 +73,23 @@ socket.on("disconnect",function(code,reason) {
 console.log(reason) // bye
 })
 ```
+
+## Documentation
+
+#### new SimpleSockets(options) (server)
+The server
+
+* options - Websocket options (uws)
+
+##### Server.close();
+
+Close the server
+
+##### Server.on(event,function)
+
+Add events
+
+
+#### Server.addParser(parser)
+
+add custom parser

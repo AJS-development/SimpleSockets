@@ -65,7 +65,7 @@ module.exports = class SimpleSockets {
         })
     }
     close() {
-        this.socket.shutDown();
+        this.socket.close();
         this.socket = null;
         this.open = false;
     }
