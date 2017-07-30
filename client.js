@@ -67,7 +67,7 @@ module.exports = class Client {
     close(reason, desc) {
         this.socket.close(reason, desc);
     }
-    disconnect(r, d) {
+    disconnect(reason, desc) {
         this.socket.close(reason, desc);
     }
     drop(reason, desc) {
