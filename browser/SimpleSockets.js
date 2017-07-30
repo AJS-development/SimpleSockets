@@ -249,6 +249,10 @@
         close(a, b) {
             this.socket.close(a, b);
         }
+       
+        disconnect(a,b) {
+            this.socket.close(a,b);  
+        }
         onMessage(msg) {
 
             var reader = new FastBuffers.reader(msg.data)
