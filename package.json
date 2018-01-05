@@ -1,6 +1,6 @@
 {
     "name": "simplesockets",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "Bye-Bye socket.io!",
     "main": "index.js",
     "scripts": {

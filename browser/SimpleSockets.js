@@ -33,10 +33,104 @@
                 return 1;
             }
         },
+        reader: class Reader {
+            constructor(buf) {
+                this.index = 0;
+                this.buffer = new DataView(buf);
+            }
+            readString8() {
+                var data = "";
+                while (this.index <= this.buffer.byteLength) {
+                    var d = this.readUInt8();
+                    if (!d) break;
+                    data += String.fromCharCode(d);
+                }
+                return data;
+            }
+            readString16() {
+                var data = "";
+                while (this.index <= this.buffer.byteLength) {
+                    var d = this.readUInt16BE();
+                    if (!d) break;
+                    data += String.fromCharCode(d);
+                }
+                return data;
+            }
+            readString32() {
+                var data = "";
+                while (this.index <= this.buffer.byteLength) {
+                    var d = this.readUInt32BE();
+                    if (!d) break;
+                    data += String.fromCharCode(d);
+                }
+                return data;
+            }
+            readDynamic() {
+                var num = 0;
+                for (var i = 0; i < 4; i++) {
+                    var n = this.readUInt8();
+                    num += (n & 127) << (i * 7);
+                    if (n < 127) {
+                        break;
+                    }
+                }
+                if (i === 2) num += 128;
+                else if (i === 3) num += 16512;
+                else if (i === 4) num += 2113664;
+                return num;
+            }
+            readInt8() {
+                return this.buffer.getInt8(this.index++);
+            }
+            readUInt8() {
+                return this.buffer.getUint8(this.index++);
+            }
+            readInt16BE() {
+                var data = this.buffer.getInt16(this.index);
+                this.index += 2;
+                return data;
+            }
+            readInt16LE() {
+                var data = this.buffer.getInt16(this.index, true);
+                this.index += 2;
+                return data;
+            }
+            readUInt16BE() {
+                var data = this.buffer.getUint16(this.index);
+                this.index += 2;
+                return data;
+            }
+            readUInt16LE() {
+                var data = this.buffer.getUint16(this.index, true);
+                this.index += 2;
+                return data;
+            }
+            readInt32BE() {
+                var data = this.buffer.getInt32(this.index);
+                this.index += 4;
+                return data;
+            }
+            readInt32LE() {
+                var data = this.buffer.getInt32(this.index, true);
+                this.index += 4;
+                return data;
+            }
+            readUInt32BE() {
+                var data = this.buffer.getUint32(this.index);
+                this.index += 4;
+                return data;
+            }
+            readUInt32LE() {
+                var data = this.buffer.getUint32(this.index, true);
+                this.index += 4;
+                return data;
+            }
+        },
         writer: class Writer {
             constructor(size) {
+                this.buf = new ArrayBuffer(size);
+                this.buffer = new DataView(this.buf);
                 this.index = 0;
-                this.buffer = Buffer.alloc(size);
             }
             writeString8(string) {
                 for (var i = 0; i < string.length; i++) {
@@ -79,138 +173,45 @@
                 this.writeUInt8(a);
             }
             writeInt8(n) {
-                this.buffer.writeInt8(n, this.index++)
+                this.buffer.setInt8(this.index++, n)
             }
             writeInt16BE(n) {
-                this.buffer.writeInt16BE(n, this.index)
+                this.buffer.setInt16(this.index, n)
                 this.index += 2;
             }
             writeInt16LE(n) {
-                this.buffer.writeInt16LE(n, this.index)
+                this.buffer.setInt16(this.index, n, true)
                 this.index += 2;
             }
             writeInt32BE(n) {
-                this.buffer.writeInt32BE(n, this.index)
+                this.buffer.setInt32(this.index, n)
                 this.index += 4;
             }
             writeInt32LE(n) {
-                this.buffer.writeInt32LE(n, this.index)
+                this.buffer.setInt32(this.index, n, true)
                 this.index += 4;
             }
             writeUInt8(n) {
-                this.buffer.writeUInt8(n, this.index++)
+                this.buffer.setUint8(this.index++, n)
             }
             writeUInt16BE(n) {
-                this.buffer.writeUInt16BE(n, this.index)
+                this.buffer.setUint16(this.index, n)
                 this.index += 2;
             }
             writeUInt16LE(n) {
-                this.buffer.writeUInt16LE(n, this.index)
+                this.buffer.setUint16(this.index, n, true)
                 this.index += 2;
             }
             writeUInt32BE(n) {
-                this.buffer.writeUInt32BE(n, this.index)
+                this.buffer.setUint32(this.index, n)
                 this.index += 4;
             }
             writeUInt32LE(n) {
-                this.buffer.writeUInt32LE(n, this.index)
+                this.buffer.setUint32(this.index, n, true)
                 this.index += 4;
             }
             toBuffer() {
-                return this.buffer;
-            }
-        },
-        reader: class Reader {
-            constructor(buf) {
-                this.index = 0;
-                this.buffer = buf;
-            }
-            readString8() {
-                var data = "";
-                while (this.index <= this.buffer.length) {
-                    var d = this.readUInt8();
-                    if (!d) break;
-                    data += String.fromCharCode(d);
-                }
-                return data;
-            }
-            readString16() {
-                var data = "";
-                while (this.index <= this.buffer.length) {
-                    var d = this.readUInt16BE();
-                    if (!d) break;
-                    data += String.fromCharCode(d);
-                }
-                return data;
-            }
-            readString32() {
-                var data = "";
-                while (this.index <= this.buffer.length) {
-                    var d = this.readUInt32BE();
-                    if (!d) break;
-                    data += String.fromCharCode(d);
-                }
-                return data;
-            }
-            readDynamic() {
-                var num = 0;
-                for (var i = 0; i < 4; i++) {
-                    var n = this.readUInt8();
-                    num += (n & 127) << (i * 7);
-                    if (n < 127) {
-                        break;
-                    }
-                }
-                if (i === 2) num += 128;
-                else if (i === 3) num += 16512;
-                else if (i === 4) num += 2113664;
-                return num;
-            }
-            readInt8() {
-                return this.buffer.readInt8(this.index++);
-            }
-            readUInt8() {
-                return this.buffer.readUInt8(this.index++);
-            }
-            readInt16BE() {
-                var data = this.buffer.readInt16BE(this.index);
-                this.index += 2;
-                return data;
-            }
-            readInt16LE() {
-                var data = this.buffer.readInt16LE(this.index);
-                this.index += 2;
-                return data;
-            }
-            readUInt16BE() {
-                var data = this.buffer.readUInt16BE(this.index);
-                this.index += 2;
-                return data;
-            }
-            readUInt16LE() {
-                var data = this.buffer.readUInt16LE(this.index);
-                this.index += 2;
-                return data;
-            }
-            readInt32BE() {
-                var data = this.buffer.readInt32BE(this.index);
-                this.index += 4;
-                return data;
-            }
-            readInt32LE() {
-                var data = this.buffer.readInt32LE(this.index);
-                this.index += 4;
-                return data;
-            }
-            readUInt32BE() {
-                var data = this.buffer.readUInt32BE(this.index);
-                this.index += 4;
-                return data;
-            }
-            readUInt32LE() {
-                var data = this.buffer.readUInt32LE(this.index);
-                this.index += 4;
-                return data;
+                return this.buf;
             }
         }
     }
