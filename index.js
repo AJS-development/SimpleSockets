@@ -77,7 +77,7 @@ module.exports = class SimpleSockets {
     handleUpgrade(request, socket, head, callback) {
         this.socket.handleUpgrade(request, socket, head, function (ws) {
             var client = this.onConnection(ws)
-            callback(client);
+            if (callback) callback(client);
         })
     }
     on(name, func) {
