@@ -70,8 +70,15 @@ module.exports = class SimpleSockets {
         this.open = false;
     }
     onConnection(clientSocket) {
-        this.fire("connection", new Client(clientSocket, this))
-
+        var client = new Client(clientSocket, this)
+        this.fire("connection", client)
+        return client;
+    }
+    handleUpgrade(request, socket, head, callback) {
+        this.socket.handleUpgrade(request, socket, head, function (ws) {
+            var client = this.onConnection(ws)
+            callback(client);
+        })
     }
     on(name, func) {
         this.events[name] = func;

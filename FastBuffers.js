@@ -199,7 +199,5 @@ module.exports = {
             this.index += 4;
             return data;
         }
-
     }
-
 }
