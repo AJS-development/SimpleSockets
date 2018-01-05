@@ -7,6 +7,19 @@ https://github.com/ThreeLetters/FastBuffers/tree/master
 
 
 module.exports = {
+    getDynamicSize: function (a) {
+        if (a > 270549119) {
+            throw "ERR: OUT OF BOUNDS"
+        } else if (a > 2113663) {
+            return 4;
+        } else if (a > 16511) {
+            return 3;
+        } else if (a > 127) {
+            return 2;
+        } else {
+            return 1;
+        }
+    },
     writer: class Writer {
         constructor(size) {
             this.index = 0;
@@ -29,6 +42,28 @@ module.exports = {
                 this.writeUInt32BE(string.charCodeAt(i))
             }
             this.writeUInt32BE(0)
+        }
+        writeDynamic(a) {
+            var i;
+            if (a > 270549119) {
+                throw "ERR: OUT OF BOUNDS"
+            } else if (a > 2113663) {
+                a = a - 2113664;
+                i = 3;
+            } else if (a > 16511) {
+                a = a - 16512;
+                i = 2;
+            } else if (a > 127) {
+                a = a - 128;
+                i = 1;
+            } else {
+                i = 0;
+            }
+            for (var j = 0; j < i; j++) {
+                this.writeUInt8((a & 127) | 128);
+                a = a >> 7;
+            }
+            this.writeUInt8(a);
         }
         writeInt8(n) {
             this.buffer.writeInt8(n, this.index++)
@@ -103,6 +138,20 @@ module.exports = {
                 data += String.fromCharCode(d);
             }
             return data;
+        }
+        readDynamic() {
+            var num = 0;
+            for (var i = 0; i < 4; i++) {
+                var n = this.readUInt8();
+                num += (n & 127) << (i * 7);
+                if (n < 127) {
+                    break;
+                }
+            }
+            if (i === 2) num += 128;
+            else if (i === 3) num += 16512;
+            else if (i === 4) num += 2113664;
+            return num;
         }
         readInt8() {
             return this.buffer.readInt8(this.index++);
