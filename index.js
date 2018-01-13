@@ -49,7 +49,8 @@ module.exports = class SimpleSockets {
         this.socket = new uws.Server(options);
         this.events = {};
         this.parser = {
-            json: JSONEncoder
+            json: JSONEncoder,
+            binary: BinaryEncoder
         };
         this.parserMap = [JSONEncoder, BinaryEncoder]
         this.fastbuffers = FastBuffers;
