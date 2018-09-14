@@ -1,6 +1,6 @@
 {
     "name": "simplesockets",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Bye-Bye socket.io!",
     "main": "index.js",
     "scripts": {
@@ -15,7 +15,7 @@
         "socket"
     ],
     "dependencies": {
-        "uws": "latest"
+        "uws": "10.148.1"
     },
     "author": "AJS",
     "license": "Apache-2.0",
