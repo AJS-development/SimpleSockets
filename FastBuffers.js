@@ -144,7 +144,8 @@ module.exports = {
             for (var i = 0; i < 4; i++) {
                 var n = this.readUInt8();
                 num += (n & 127) << (i * 7);
-                if (n < 127) {
+                if (n <= 127) {
+                    i++;
                     break;
                 }
             }
