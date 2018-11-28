@@ -34,7 +34,7 @@
 
 */
 
-const uws = require("uws")
+const uws = require("ws")
 
 const Client = require("./client.js");
 

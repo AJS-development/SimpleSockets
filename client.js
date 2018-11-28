@@ -83,10 +83,14 @@ module.exports = class Client {
     }
 
     send(name, parserName, dt) {
-        var encoded = this.main.parser[parserName].encoder(name, dt, this, this.main, this.main.fastbuffers);
-        this.socket.send(encoded, {
-            binary: true
-        });
+        try {
+            var encoded = this.main.parser[parserName].encoder(name, dt, this, this.main, this.main.fastbuffers);
+            this.socket.send(encoded, {
+                binary: true
+            });
+        } catch (e) {
+            this.fire("error",e);
+        }
     }
 
     on(name, func) {
